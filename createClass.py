@@ -84,7 +84,7 @@ def createSource(className, nameSpaces):
       def fprint(line):
          outfile.write(line + '\n')
 
-      fprint(f'#include "{className}.h"')
+      fprint(f'#include "{fileBase}.h"')
       fprint('')
       fprint(f'{nameSpace}{className}::{className}()')
       fprint('{')
@@ -108,7 +108,7 @@ def createInline(className, nameSpaces):
       fprint(f'#ifndef {fileBase}H')
       fprint(f'#define {fileBase}H')
       fprint('')         
-      fprint(f'#include "{className}.h"')
+      fprint(f'#include "{fileBase}.h"')
       fprint('')
 
       fprint(f'{nameSpace}{className}::{className}()')
