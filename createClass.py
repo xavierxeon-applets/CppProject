@@ -105,8 +105,8 @@ def createInline(className, nameSpaces):
       def fprint(line):
          outfile.write(' ' * 3 * indent + line + '\n')
 
-      fprint(f'#ifndef {fileBase}H')
-      fprint(f'#define {fileBase}H')
+      fprint(f'#ifndef {fileBase}HPP')
+      fprint(f'#define {fileBase}HPP')
       fprint('')         
       fprint(f'#include "{fileBase}.h"')
       fprint('')
@@ -116,7 +116,7 @@ def createInline(className, nameSpaces):
       fprint('}')
       
       fprint('')
-      fprint(f'#endif // {fileBase}H')      
+      fprint(f'#endif // {fileBase}HPP')      
 
 def main():
 
