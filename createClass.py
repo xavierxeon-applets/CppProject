@@ -60,9 +60,9 @@ def createHeader(className, nameSpaces, inline):
       fprint('};')
 
       if nameSpaces:
-         for nameSpace in nameSpaces:
+         for nameSpace in reversed(nameSpaces):
             indent -= 1
-            fprint(f'\u007d //{nameSpace}')
+            fprint(f'\u007d // namespace {nameSpace}')
 
       if inline:
          fprint('')
