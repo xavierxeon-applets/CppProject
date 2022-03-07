@@ -9,8 +9,8 @@ cd src
 PRO_FILE=$PROJECT.pro
 
 echo "create PRO file"
-echo "TEMPLATE = app" > $PRO_FILE
 echo "TARGET = $PROJECT" >> $PRO_FILE
+echo "TEMPLATE = app" > $PRO_FILE
 
 echo "" >> $PRO_FILE
 echo "QT += gui" >> $PRO_FILE 
