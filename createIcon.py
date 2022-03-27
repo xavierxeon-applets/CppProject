@@ -40,6 +40,7 @@ def addToResourceFile(iconNameList):
         break
 
     if not fileName:
+        print('no qrc file found')
         return
 
     tree = et.parse(fileName)
@@ -73,12 +74,17 @@ def addToResourceFile(iconNameList):
 def main():
 
     parser = argparse.ArgumentParser(description='Create new SVG icon templates.')
-    parser.add_argument('iconnames', metavar='ICONS', type=str, nargs='+', help='list of icons to create')
-    parser.add_argument('-a', '--add', action='store_true', help='add to resource file (if it exists')
+    parser.add_argument('iconnames', metavar='ICONS', type=str, nargs='*', help='list of icons to create')
+    parser.add_argument('-r', '--resource', action='store_true', help='add all svg files to existing resource file')
 
     args = parser.parse_args()  # will quit here if help is called
 
+    # create new icons
     iconNameList = args.iconnames
+    if not iconNameList and not args.resource:
+        parser.print_help()
+        return
+
     for index in range(len(iconNameList)):
         name = iconNameList[index]
         if name.endswith('.svg'):
@@ -87,7 +93,19 @@ def main():
 
     createIcons(iconNameList)
 
-    if args.add:
+    # maybe add to resource
+    if args.resource:
+        iconNameList = list()
+        for entry in os.scandir():
+            if not entry.is_file():
+                continue
+            if not entry.name.endswith('.svg'):
+                continue
+            iconNameList.append(entry.name)
+
+        if not iconNameList:
+            print('no svg icons found')
+
         addToResourceFile(iconNameList)
 
 
