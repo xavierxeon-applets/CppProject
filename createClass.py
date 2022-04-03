@@ -132,20 +132,22 @@ def main():
     parser = argparse.ArgumentParser(description='Create new C++ classes.')
     parser.add_argument('classnames', metavar='CLASSES', type=str, nargs='+', help='list of classes to create')
     parser.add_argument('-n', '--namespace', action='append', help='all classes are in this namespace')
-    parser.add_argument('-i', '--inline', action='store_true', help='create HPP instead of CPP')
+    parser.add_argument('-i', '--inline', action='store_true', help='create HPP file')
+    parser.add_argument('-s', '--nosource', action='store_true', help='do not create CPP file')
 
     args = parser.parse_args()  # will quit here if help is called
 
     classNames = args.classnames
     nameSpaces = args.namespace
     inline = args.inline
+    nosource = args.nosource
 
     for className in classNames:
 
         createHeader(className, nameSpaces, inline)
         if inline:
             createInline(className, nameSpaces)
-        else:
+        if not nosource:
             createSource(className, nameSpaces)
 
 
