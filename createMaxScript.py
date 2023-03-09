@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import argparse
+
 
 def createHeader(inletCount, outletCount):
 
@@ -20,6 +20,7 @@ def createHeader(inletCount, outletCount):
 
     return text
 
+
 def createBody():
 
     text = 'function bang(){\n'
@@ -29,6 +30,7 @@ def createBody():
 
     return text
 
+
 def createBodyUi():
 
     text = 'function bang(){\n'
@@ -37,6 +39,7 @@ def createBodyUi():
     text += '\n'
 
     return text
+
 
 def main():
 
@@ -48,13 +51,13 @@ def main():
 
     args = parser.parse_args()  # will quit here if help is called
     scriptname = args.scriptname[0]
-    if not scriptname.endspwith('.js'):
+    if not scriptname.endswith('.js'):
         scriptname += '.js'
 
     if os.path.exists(scriptname):
         print(f'script {scriptname} does already exist')
         return
-    
+
     inletCount = int(args.inlet)
     outletCount = int(args.outlet)
 
@@ -67,6 +70,7 @@ def main():
 
     with open(scriptname, 'w') as outfile:
         outfile.write(text)
+
 
 if __name__ == '__main__':
     main()
