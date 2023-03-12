@@ -6,8 +6,10 @@ import argparse
 
 def createHeader(inletCount, outletCount):
 
-    text = '// inlets and outlets\n'
+    text = "autowatch = 1;\n"
+    text += '\n'
 
+    text += '// inlets and outlets\n'
     text += f'inlets = {inletCount};\n'
     for index in range(inletCount):
         text += f'setinletassist({index}, "text");\n'
@@ -45,8 +47,8 @@ def main():
 
     parser = argparse.ArgumentParser(description='Create new Max javascript.')
     parser.add_argument('scriptname', metavar='SCRIPT', type=str, nargs=1, help='name of script to create')
-    parser.add_argument('-i', '--inlet', metavar='COUNT', nargs='?', default=0, help='number of inlets')
-    parser.add_argument('-o', '--outlet', metavar='COUNT', nargs='?', default=0, help='number of outlets')
+    parser.add_argument('-i', '--inlet', metavar='COUNT', nargs='?', default=1, help='number of inlets')
+    parser.add_argument('-o', '--outlet', metavar='COUNT', nargs='?', default=1, help='number of outlets')
     parser.add_argument('-u', '--ui', action='store_true', help='create ui file')
 
     args = parser.parse_args()  # will quit here if help is called
