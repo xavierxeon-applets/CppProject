@@ -46,32 +46,34 @@ def createBodyUi():
 def main():
 
     parser = argparse.ArgumentParser(description='Create new Max javascript.')
-    parser.add_argument('scriptname', metavar='SCRIPT', type=str, nargs=1, help='name of script to create')
+    parser.add_argument('scriptnames', metavar='SCRIPTS', type=str, nargs='+', help='name of script to create')
     parser.add_argument('-i', '--inlet', metavar='COUNT', nargs='?', default=1, help='number of inlets')
     parser.add_argument('-o', '--outlet', metavar='COUNT', nargs='?', default=1, help='number of outlets')
     parser.add_argument('-u', '--ui', action='store_true', help='create ui file')
 
     args = parser.parse_args()  # will quit here if help is called
-    scriptname = args.scriptname[0]
-    if not scriptname.endswith('.js'):
-        scriptname += '.js'
 
-    if os.path.exists(scriptname):
-        print(f'script {scriptname} does already exist')
-        return
-
+    scriptnames = args.scriptnames
     inletCount = int(args.inlet)
     outletCount = int(args.outlet)
 
-    text = createHeader(inletCount, outletCount)
+    for scriptname in scriptnames:
+        if not scriptname.endswith('.js'):
+            scriptname += '.js'
 
-    if args.ui:
-        text += createBodyUi()
-    else:
-        text += createBody()
+        if os.path.exists(scriptname):
+            print(f'script {scriptname} does already exist')
+            return
 
-    with open(scriptname, 'w') as outfile:
-        outfile.write(text)
+        text = createHeader(inletCount, outletCount)
+
+        if args.ui:
+            text += createBodyUi()
+        else:
+            text += createBody()
+
+        with open(scriptname, 'w') as outfile:
+            outfile.write(text)
 
 
 if __name__ == '__main__':

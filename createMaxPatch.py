@@ -42,32 +42,39 @@ def createOutlets(outletCount):
 def main():
 
     parser = argparse.ArgumentParser(description='Create new Max patch.')
-    parser.add_argument('patchname', metavar='PATCH', type=str, nargs=1, help='name of patch to create')
+    parser.add_argument('patchnames', metavar='PATCHES', type=str, nargs='+', help='name of patch to create')
     parser.add_argument('-i', '--inlet', metavar='COUNT', nargs='?', default=1, help='number of inlets, default is 1')
     parser.add_argument('-o', '--outlet', metavar='COUNT', nargs='?', default=1, help='number of outlets, default is 1')
 
     args = parser.parse_args()  # will quit here if help is called
 
-    patchname = args.patchname[0]
-    if not patchname.endswith('.maxpat'):
-        patchname += '.maxpat'
-
-    if os.path.exists(patchname):
-        print(f'patch {patchname} does already exist')
-        return
-
+    patchnames = args.patchnames
     inletCount = int(args.inlet)
     outletCount = int(args.outlet)
 
-    boxes = list()
-    for inlet in createInlets(inletCount):
-        boxes.append(inlet)
-    for outlet in createOutlets(outletCount):
-        boxes.append(outlet)
+    patcher = dict()
+    patcher['boxes'] = boxes
+    patcher['gridonopen'] = 2
+    patcher['gridsnaponopen'] = 2
+    patcher['subpatcher_template'] = 'OpenGrid'
 
-    with open(patchname, 'w') as outfile:
-        data = {'patcher': {'boxes': boxes}}
-        json.dump(data, outfile, indent=3)
+    for patchname in patchnames:
+        if not patchname.endswith('.maxpat'):
+            patchname += '.maxpat'
+
+        if os.path.exists(patchname):
+            print(f'patch {patchname} does already exist')
+            continue
+
+        boxes = list()
+        for inlet in createInlets(inletCount):
+            boxes.append(inlet)
+        for outlet in createOutlets(outletCount):
+            boxes.append(outlet)
+
+        data = {'patcher': patcher}
+        with open(patchname, 'w') as outfile:
+            json.dump(data, outfile, indent=3)
 
 
 if __name__ == '__main__':
