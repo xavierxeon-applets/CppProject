@@ -53,7 +53,6 @@ def main():
     outletCount = int(args.outlet)
 
     patcher = dict()
-    patcher['boxes'] = boxes
     patcher['gridonopen'] = 2
     patcher['gridsnaponopen'] = 2
     patcher['subpatcher_template'] = 'OpenGrid'
@@ -71,6 +70,7 @@ def main():
             boxes.append(inlet)
         for outlet in createOutlets(outletCount):
             boxes.append(outlet)
+        patcher['boxes'] = boxes
 
         data = {'patcher': patcher}
         with open(patchname, 'w') as outfile:
