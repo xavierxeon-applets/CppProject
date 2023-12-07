@@ -13,8 +13,8 @@ echo "TARGET = $PROJECT" > $PRO_FILE
 echo "TEMPLATE = app" >> $PRO_FILE
 
 echo "" >> $PRO_FILE
-echo "QT += gui" >> $PRO_FILE 
-echo "CONFIG += c++latest" >> $PRO_FILE
+echo "QT += widgets svg" >> $PRO_FILE 
+echo "CONFIG += c++20" >> $PRO_FILE
 
 echo "" >> $PRO_FILE
 echo "DESTDIR = \$\$PWD/../bin" >> $PRO_FILE
@@ -34,8 +34,8 @@ cp $PROJECT_SCRIPT_DIR/_clang-format _clang-format
 if [ -d .git ]
 then
    git add .gitignore
+   git add _clang-format
    git add src/*
-   git add src/_clang-format
    git commit -m "project infrastructure"
 fi
 
