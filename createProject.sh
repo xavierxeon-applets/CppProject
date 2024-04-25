@@ -17,7 +17,7 @@ echo "QT += widgets svg" >> $PRO_FILE
 echo "CONFIG += c++20" >> $PRO_FILE
 
 echo "" >> $PRO_FILE
-echo "DESTDIR = \$\$PWD/../bin" >> $PRO_FILE
+echo "#DESTDIR = \$\$PWD/../bin" >> $PRO_FILE
 
 echo "" >> $PRO_FILE
 
