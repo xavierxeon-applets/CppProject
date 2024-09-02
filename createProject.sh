@@ -3,9 +3,6 @@
 PROJECT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"  
 PROJECT=$(pwd | awk -F / '{print $NF}')
 
-mkdir src
-cd src
-
 PRO_FILE=$PROJECT.pro
 
 echo "create PRO file"
@@ -35,7 +32,7 @@ if [ -d .git ]
 then
    git add .gitignore
    git add _clang-format
-   git add src/*
+   git add $PRO_FILE
    git commit -m "project infrastructure"
 fi
 
