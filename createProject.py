@@ -107,7 +107,7 @@ class Project(CursesGui):
          cmakefile.write('set(CMAKE_AUTORCC ON)\n')
          cmakefile.write('\n')
 
-         cmakefile.write('inclue_directories(${CMAKE_CURRENT_SOURCE_DIR})\n')
+         cmakefile.write('include_directories(${CMAKE_CURRENT_SOURCE_DIR})\n')
          cmakefile.write('\n')
          cmakefile.write('file(GLOB_RECURSE SOURCE_FILES\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.h\n')

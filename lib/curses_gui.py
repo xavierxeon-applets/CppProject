@@ -111,18 +111,18 @@ class CursesGui:
 
    def _interaction(self):
 
-      match self._screen.getkey():
-         case 'q':
-            return Action.EXIT
-         case 'c':
-            return Action.CREATE
-         case ' ':
-            self.toggle(self._cursorIndex)
-         case "KEY_UP":
-            if self._cursorIndex > 0:
-               self._cursorIndex -= 1
-         case "KEY_DOWN":
-            if self._cursorIndex + 1 < self._maxCursorIndex:
-               self._cursorIndex += 1
+      k = self._screen.getkey()
+      if k == 'q':
+         return Action.EXIT
+      elif k ==  'c':
+         return Action.CREATE
+      elif k ==  ' ':
+         self.toggle(self._cursorIndex)
+      elif k ==  "KEY_UP":
+         if self._cursorIndex > 0:
+            self._cursorIndex -= 1
+      elif k ==  "KEY_DOWN":
+         if self._cursorIndex + 1 < self._maxCursorIndex:
+            self._cursorIndex += 1
 
       return Action.NONE
