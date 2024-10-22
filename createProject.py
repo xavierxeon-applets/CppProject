@@ -5,7 +5,7 @@ import os
 import shutil
 import subprocess
 
-from lib import Color, CursesGui
+from lib import PredfinedColor, CursesGui, KeyAction
 
 
 class Project(CursesGui):
@@ -25,9 +25,14 @@ class Project(CursesGui):
                        'widget': [True, 'Widgets'],
                        'network': [False, 'Network']}
 
-      super().__init__(screen, len(self.features))
+      self.keyMap = dict()
+      self.keyMap[' '] = KeyAction(self.toggle, False, 'toggle')
+      self.keyMap['c'] = KeyAction(self.create, True, 'create')
+      self.keyMap['q'] = KeyAction(None, True, 'quit')
 
-   def create(self):
+      super().__init__(screen, len(self.features), self.keyMap)
+
+   def create(self, index):
 
       os.chdir(self.projectPath)
 
@@ -55,7 +60,7 @@ class Project(CursesGui):
       line = 0
       for _, feature in self.features.items():
          check = '[x]' if feature[0] else '[ ]'
-         checkColor = Color.SELCTED if index == line else 0
+         checkColor = PredfinedColor.SELCTED if index == line else 0
          screen.addstr(line + lineOffset, 1, check, checkColor)
          screen.addstr(line + lineOffset, 5, feature[1])
          line += 1
@@ -63,7 +68,7 @@ class Project(CursesGui):
    def fillHeader(self, header):
 
       header.addstr(0, 1, 'Create CMAKE project for ')
-      header.addstr(0, 26, self.name, Color.HEADER_HIGHLIGHT)
+      header.addstr(0, 26, self.name, PredfinedColor.HEADER_HIGHLIGHT)
 
    def fillFooter(self, footer):
 

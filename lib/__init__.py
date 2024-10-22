@@ -1,3 +1,3 @@
 #
 
-from .curses_gui import Action, Color, CursesGui
+from .curses_gui import KeyAction, PredfinedColor, CursesGui
