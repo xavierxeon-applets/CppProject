@@ -131,7 +131,7 @@ class Project(CursesGui):
          if self._featureEnabled('pre_compile'):
             cmakefile.write('target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}.precompiled.h)\n')
             cmakefile.write('target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}..precompiledh)\n')
-            if not os.path.exists(f'({self.name}..precompiledh'):
+            if not os.path.exists(f'{self.name}..precompiledh'):
                with open(f'({self.name}.precompiled.h', 'w') as pre_compiled_header:
                   pre_compiled_header.write('#pragma once\n')
                   pre_compiled_header.write('\n')
