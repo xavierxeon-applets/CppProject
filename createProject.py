@@ -4,8 +4,7 @@ import curses
 import os
 import shutil
 import subprocess
-
-from lib import PredfinedColor, CursesGui, KeyAction
+from wapy import PredfinedColor, CursesGui, KeyAction
 
 
 class Project(CursesGui):
