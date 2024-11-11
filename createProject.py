@@ -59,7 +59,7 @@ class Project(CursesGui):
       line = 0
       for _, feature in self.features.items():
          check = '[x]' if feature[0] else '[ ]'
-         checkColor = PredfinedColor.SELCTED if index == line else 0
+         checkColor = PredfinedColor.SELECTED if index == line else 0
          screen.addstr(line + lineOffset, 1, check, checkColor)
          screen.addstr(line + lineOffset, 5, feature[1])
          line += 1
@@ -131,7 +131,7 @@ class Project(CursesGui):
             cmakefile.write('target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}.precompiled.h)\n')
             cmakefile.write('target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}.precompiled.h)\n')
             if not os.path.exists(f'{self.name}..precompiledh'):
-               with open(f'({self.name}.precompiled.h', 'w') as pre_compiled_header:
+               with open(f'{self.name}.precompiled.h', 'w') as pre_compiled_header:
                   pre_compiled_header.write('#pragma once\n')
                   pre_compiled_header.write('\n')
                   pre_compiled_header.write('#include <QDebug>\n')
