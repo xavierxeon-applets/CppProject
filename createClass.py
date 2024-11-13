@@ -56,10 +56,7 @@ def createHeader(className, nameSpaces, inline):
       fprint('{')
       fprint('public:')
       indent += 1
-      if inline:
-         fprint(f'inline {className}();')
-      else:
-         fprint(f'{className}();')
+      fprint(f'{className}();')
       indent -= 1
       fprint('};')
 
@@ -119,7 +116,7 @@ def createInline(className, nameSpaces):
       fprint(f'#include "{fileBase}.h"')
       fprint('')
 
-      fprint(f'{nameSpace}{className}::{className}()')
+      fprint(f'inline {nameSpace}{className}::{className}()')
       fprint('{')
       fprint('}')
 
