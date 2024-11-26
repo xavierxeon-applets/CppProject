@@ -147,8 +147,8 @@ class Project(CursesGui):
          if self._featureEnabled('icon'):
             cmakefile.write('\n')
             cmakefile.write('if(APPLE)\n')
-            cmakefile.write('   set(MACOSX_BUNDLE_ICON_FILE Spacer.icns)\n')
-            cmakefile.write('   set(APP_ICON ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Spacer.icns)\n')
+            cmakefile.write('   set(MACOSX_BUNDLE_ICON_FILE ${PROJECT_NAME}.icns)\n')
+            cmakefile.write('   set(APP_ICON ${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME}.icns)\n')
             cmakefile.write('   set_source_files_properties(${APP_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")\n')
             cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
             cmakefile.write('endif()\n')
