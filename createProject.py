@@ -22,7 +22,8 @@ class Project(CursesGui):
                        'pre_compile': [True, 'Pre compiled Header'],
                        'gui': [False, 'Gui'],
                        'widget': [True, 'Widgets'],
-                       'network': [False, 'Network']}
+                       'network': [False, 'Network'],
+                       'git': [True, 'Add files to git'], }
 
       self.keyMap = dict()
       self.keyMap[' '] = KeyAction(self.toggle, False, 'toggle')
@@ -166,12 +167,17 @@ class Project(CursesGui):
 
    def _doGitThings(self):
 
+      if not self._featureEnabled('git'):
+         return
+
       if not os.path.exists('.git'):
          subprocess.run(['git', 'init'])
 
       subprocess.run(['git', 'add', '.gitignore'])
       subprocess.run(['git', 'add', '_clang-format'])
       subprocess.run(['git', 'add', 'CMakeLists.txt'])
+      if os.path.exists(f'{self.name}.precompiled.h'):
+         subprocess.run(['git', 'add', f'{self.name}.precompiled.h'])
       subprocess.run(['git', 'commit', '-m', '"first commit"'])
 
 
