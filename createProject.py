@@ -14,8 +14,7 @@ class BannerWindow(CursesWindow):
       self._keyMap = keyMap
 
       bannerHeight = 1 + len(self._keyMap)
-      height, width = CursesApp.screen.getmaxyx()
-      super().__init__(bannerHeight, width, height - (bannerHeight + 1), 0)
+      super().__init__(0, -(bannerHeight + 1), -1, bannerHeight)
 
       self.backgroundColor = PredfinedColor.BANNER
 
@@ -32,6 +31,15 @@ class BannerWindow(CursesWindow):
 
 class Project(CursesApp):
 
+   class Feature:
+
+      def __init__(self, enabled, description, cursorPos, category):
+
+         self.enabled = enabled
+         self.description = description
+         self.cursorPos = cursorPos
+         self.category = category
+
    def __init__(self, screen):
 
       keyMap = dict()
@@ -44,9 +52,8 @@ class Project(CursesApp):
       self.bannerWindow = BannerWindow(keyMap)
       self.addWindow(self.bannerWindow)
 
-      height, width = CursesApp.screen.getmaxyx()
-      self.createWindow(1, width, 0, 0, PredfinedColor.HEADER, self.fillHeader)
-      self.createWindow(1, width, height - 1, 0, PredfinedColor.HEADER, self.fillFooter)
+      self.createWindow(0, 0, -1, 1, PredfinedColor.HEADER, self.fillHeader)
+      self.createWindow(0, -1, -1, 1, PredfinedColor.HEADER, self.fillFooter)
 
       self.projectPath = os.getcwd()
       self.name = os.path.basename(self.projectPath)
@@ -54,16 +61,17 @@ class Project(CursesApp):
       scriptDir = os.path.abspath(__file__)
       self.scriptDir = os.path.dirname(scriptDir)
 
-      self.features = {'app_wrapper': [True, 'Mac and Windows app'],
-                       'icon': [False, 'App icon'],
-                       'pre_compile': [True, 'Pre compiled Header'],
-                       'gui': [False, 'Gui'],
-                       'widget': [True, 'Widgets'],
-                       'network': [False, 'Network'],
-                       'git': [True, 'Create Git repository']}
-      self.maxCursorIndex = len(self.features)
+      self.features = {'app_wrapper': Project.Feature(True, 'Mac and Windows app', [0, 0], 'Qt'),
+                       'icon': Project.Feature(False, 'App icon', [0, 1], 'Qt'),
+                       'gui': Project.Feature(False, 'Gui', [0, 2], 'Qt'),
+                       'widget': Project.Feature(True, 'Widgets', [0, 3], 'Qt'),
+                       'network': Project.Feature(False, 'Network', [0, 4], 'Qt'),
+                       'pre_compile': Project.Feature(True, 'Pre compiled Header', [1, 0], 'C++'),
+                       'git_create': Project.Feature(False, 'Create Git repository', [1, 1], 'Git')}
 
-   def create(self, _):
+      self.maxCursorPos = [1, 4]
+
+   def create(self):
 
       os.chdir(self.projectPath)
 
@@ -76,25 +84,37 @@ class Project(CursesApp):
       self._createCmakeFile()
       self._doGitThings()
 
-   def toggle(self, index):
+   def toggle(self):
 
-      keys = list(self.features.keys())
-      key = keys[index]
-      feature = self.features[key]
-      feature[0] = not feature[0]
+      for _, feature in self.features.items():
+         if self.cursorPos == feature.cursorPos:
+            feature.enabled = not feature.enabled
+            return
 
-   def fillScreen(self, screen, index):
+   def fillScreen(self, screen):
 
-      screen.addstr(2, 1, 'Qt Features:')
       lineOffset = 4
 
+      screen.addstr(2, 1, 'Qt Features:')
       line = 0
       for _, feature in self.features.items():
-         check = '[x]' if feature[0] else '[ ]'
-         checkColor = PredfinedColor.SELECTED if index == line else 0
-         screen.addstr(line + lineOffset, 1, check, checkColor)
-         screen.addstr(line + lineOffset, 5, feature[1])
+         if feature.category != 'Qt':
+            continue
+         self.addCheckBox(line + lineOffset, 1, feature.description, feature.enabled, self.cursorPos == feature.cursorPos)
          line += 1
+
+      screen.addstr(2, 30, 'Other Features:')
+      line = 0
+      for _, feature in self.features.items():
+         if feature.category == 'Qt':
+            continue
+         self.addCheckBox(line + lineOffset, 30, feature.description, feature.enabled, self.cursorPos == feature.cursorPos)
+         line += 1
+
+   def cursorUpdated(self):
+
+      if self.cursorPos[0] == 1 and self.cursorPos[1] > 1:
+         self.cursorPos[0] = 0
 
    def fillHeader(self, header):
 
@@ -103,7 +123,7 @@ class Project(CursesApp):
 
    def fillFooter(self, footer):
 
-      footer.addstr(0, 1, self.projectPath)
+      footer.addstr(0, 1, f'{self.projectPath} @ [{self.cursorPos[0]}, {self.cursorPos[1]}]')
 
    def _featureEnabled(self, key):
 
@@ -198,15 +218,21 @@ class Project(CursesApp):
 
    def _doGitThings(self):
 
-      if self._featureEnabled('git') and not os.path.exists('.git'):
+      gitAvaialbale = not os.path.exists('.git')
+
+      if self._featureEnabled('git') and not gitAvaialbale:
          subprocess.run(['git', 'init'])
+         gitAvaialbale = True
+
+      if not gitAvaialbale:
+         return
 
       subprocess.run(['git', 'add', '.gitignore'])
       subprocess.run(['git', 'add', '_clang-format'])
       subprocess.run(['git', 'add', 'CMakeLists.txt'])
       if os.path.exists(f'{self.name}.precompiled.h'):
          subprocess.run(['git', 'add', f'{self.name}.precompiled.h'])
-      subprocess.run(['git', 'commit', '-m', '"first commit"'])
+      subprocess.run(['git_create', 'commit', '-m', '"first commit"'])
 
 
 if __name__ == '__main__':
