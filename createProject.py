@@ -4,12 +4,49 @@ import curses
 import os
 import shutil
 import subprocess
-from wapy import PredfinedColor, CursesGui, KeyAction
+from wapy.curses import PredfinedColor, CursesApp, CursesWindow, KeyAction
 
 
-class Project(CursesGui):
+class BannerWindow(CursesWindow):
+
+   def __init__(self, keyMap):
+
+      self._keyMap = keyMap
+
+      bannerHeight = 1 + len(self._keyMap)
+      height, width = CursesApp.screen.getmaxyx()
+      super().__init__(bannerHeight, width, height - (bannerHeight + 1), 0)
+
+      self.backgroundColor = PredfinedColor.BANNER
+
+   def draw(self, window):
+
+      window.addstr(0, 1, 'Keyboard usage:', PredfinedColor.BANNER_HIGHLIGHT)
+      line = 1
+      for key, action in self._keyMap.items():
+         if ' ' == key:
+            key = 'space'
+         window.addstr(line, 1, f'* {action.helpText} ({key})')
+         line += 1
+
+
+class Project(CursesApp):
 
    def __init__(self, screen):
+
+      keyMap = dict()
+      keyMap[' '] = KeyAction(self.toggle, False, 'toggle')
+      keyMap['c'] = KeyAction(self.create, True, 'create')
+      keyMap['q'] = KeyAction(None, True, 'quit')
+
+      super().__init__(screen, keyMap)
+
+      self.bannerWindow = BannerWindow(keyMap)
+      self.addWindow(self.bannerWindow)
+
+      height, width = CursesApp.screen.getmaxyx()
+      self.createWindow(1, width, 0, 0, PredfinedColor.HEADER, self.fillHeader)
+      self.createWindow(1, width, height - 1, 0, PredfinedColor.HEADER, self.fillFooter)
 
       self.projectPath = os.getcwd()
       self.name = os.path.basename(self.projectPath)
@@ -23,16 +60,10 @@ class Project(CursesGui):
                        'gui': [False, 'Gui'],
                        'widget': [True, 'Widgets'],
                        'network': [False, 'Network'],
-                       'git': [True, 'Add files to git'], }
+                       'git': [True, 'Create Git repository']}
+      self.maxCursorIndex = len(self.features)
 
-      self.keyMap = dict()
-      self.keyMap[' '] = KeyAction(self.toggle, False, 'toggle')
-      self.keyMap['c'] = KeyAction(self.create, True, 'create')
-      self.keyMap['q'] = KeyAction(None, True, 'quit')
-
-      super().__init__(screen, len(self.features), self.keyMap)
-
-   def create(self, index):
+   def create(self, _):
 
       os.chdir(self.projectPath)
 
@@ -167,10 +198,7 @@ class Project(CursesGui):
 
    def _doGitThings(self):
 
-      if not self._featureEnabled('git'):
-         return
-
-      if not os.path.exists('.git'):
+      if self._featureEnabled('git') and not os.path.exists('.git'):
          subprocess.run(['git', 'init'])
 
       subprocess.run(['git', 'add', '.gitignore'])
@@ -181,11 +209,6 @@ class Project(CursesGui):
       subprocess.run(['git', 'commit', '-m', '"first commit"'])
 
 
-def main(screen):
-
-   project = Project(screen)
-   project.exec()
-
-
 if __name__ == '__main__':
-   curses.wrapper(main)
+
+   Project.main()
