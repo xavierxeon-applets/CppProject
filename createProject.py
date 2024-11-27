@@ -123,7 +123,8 @@ class Project(CursesApp):
 
    def fillFooter(self, footer):
 
-      footer.addstr(0, 1, f'{self.projectPath} @ [{self.cursorPos[0]}, {self.cursorPos[1]}]')
+      # footer.addstr(0, 1, f'{self.projectPath} @ [{self.cursorPos[0]}, {self.cursorPos[1]}]')
+      footer.addstr(0, 1, f'{self.projectPath}')
 
    def _featureEnabled(self, key):
 
