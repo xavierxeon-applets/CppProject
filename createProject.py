@@ -131,7 +131,7 @@ class Project(CursesApp):
       if not key in self.features:
          return False
 
-      return self.features[key][0]
+      return self.features[key].enabled
 
    def _createCmakeFile(self):
 
