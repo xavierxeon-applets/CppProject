@@ -219,9 +219,9 @@ class Project(CursesApp):
 
    def _doGitThings(self):
 
-      gitAvaialbale = not os.path.exists('.git')
+      gitAvaialbale = os.path.exists('.git')
 
-      if self._featureEnabled('git') and not gitAvaialbale:
+      if self._featureEnabled('git_create') and not gitAvaialbale:
          subprocess.run(['git', 'init'])
          gitAvaialbale = True
 
@@ -233,7 +233,7 @@ class Project(CursesApp):
       subprocess.run(['git', 'add', 'CMakeLists.txt'])
       if os.path.exists(f'{self.name}.precompiled.h'):
          subprocess.run(['git', 'add', f'{self.name}.precompiled.h'])
-      subprocess.run(['git_create', 'commit', '-m', '"first commit"'])
+      subprocess.run(['git', 'commit', '-m', '"first commit"'])
 
 
 if __name__ == '__main__':
