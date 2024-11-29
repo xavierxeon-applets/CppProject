@@ -183,7 +183,7 @@ class Project(CursesApp):
          if self._featureEnabled('pre_compile'):
             cmakefile.write('target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}.precompiled.h)\n')
             cmakefile.write('target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}.precompiled.h)\n')
-            if not os.path.exists(f'{self.name}..precompiledh'):
+            if not os.path.exists(f'{self.name}.precompiled.h'):
                with open(f'{self.name}.precompiled.h', 'w') as pre_compiled_header:
                   pre_compiled_header.write('#pragma once\n')
                   pre_compiled_header.write('\n')
@@ -203,7 +203,14 @@ class Project(CursesApp):
             cmakefile.write('   set(APP_ICON ${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME}.icns)\n')
             cmakefile.write('   set_source_files_properties(${APP_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")\n')
             cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
+            cmakefile.write('elseif(WIN32)\n')
+            cmakefile.write('   set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.rc")\n')
+            cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')            
             cmakefile.write('endif()\n')
+            if not os.path.exists(f'{self.name}.rc'):
+                with open(f'{self.name}.rc', 'w') as win_resource:
+                   win_resource.write('#include "winver.h"\n')                   
+                   win_resource.write(f'IDI_ICON1 ICON "Resources/{self.name}.ico"\n')
 
          cmakefile.write('\n')
          cmakefile.write('target_link_libraries(${PROJECT_NAME} PRIVATE')
