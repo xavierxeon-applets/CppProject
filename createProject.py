@@ -66,8 +66,9 @@ class Project(CursesApp):
                        'gui': Project.Feature(False, 'Gui', [0, 2], 'Qt'),
                        'widget': Project.Feature(True, 'Widgets', [0, 3], 'Qt'),
                        'network': Project.Feature(False, 'Network', [0, 4], 'Qt'),
-                       'pre_compile': Project.Feature(True, 'Pre compiled Header', [1, 0], 'C++'),
-                       'git_create': Project.Feature(False, 'Create Git repository', [1, 1], 'Git')}
+                       'pre_compiled': Project.Feature(True, 'Use pre compiled Header', [1, 0], 'C++'),
+                       'main_create': Project.Feature(True, 'Create main file', [1, 1], 'C++'),
+                       'git_create': Project.Feature(False, 'Create Git repository', [1, 2], 'Git')}
 
       self.maxCursorPos = [1, 4]
 
@@ -82,6 +83,7 @@ class Project(CursesApp):
          gitignore.write('**/build\n')
 
       self._createCmakeFile()
+      self._createOtherFiles()
       self._doGitThings()
 
    def toggle(self):
@@ -180,14 +182,9 @@ class Project(CursesApp):
          cmakefile.write('\n')
 
          cmakefile.write('qt_add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n')
-         if self._featureEnabled('pre_compile'):
+         if self._featureEnabled('pre_compiled'):
             cmakefile.write('target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}.precompiled.h)\n')
             cmakefile.write('target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}.precompiled.h)\n')
-            if not os.path.exists(f'{self.name}.precompiled.h'):
-               with open(f'{self.name}.precompiled.h', 'w') as pre_compiled_header:
-                  pre_compiled_header.write('#pragma once\n')
-                  pre_compiled_header.write('\n')
-                  pre_compiled_header.write('#include <QDebug>\n')
 
          if self._featureEnabled('app_wrapper'):
             cmakefile.write('\n')
@@ -205,12 +202,8 @@ class Project(CursesApp):
             cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
             cmakefile.write('elseif(WIN32)\n')
             cmakefile.write('   set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.rc")\n')
-            cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')            
+            cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
             cmakefile.write('endif()\n')
-            if not os.path.exists(f'{self.name}.rc'):
-                with open(f'{self.name}.rc', 'w') as win_resource:
-                   win_resource.write('#include "winver.h"\n')                   
-                   win_resource.write(f'IDI_ICON1 ICON "Resources/{self.name}.ico"\n')
 
          cmakefile.write('\n')
          cmakefile.write('target_link_libraries(${PROJECT_NAME} PRIVATE')
@@ -223,6 +216,75 @@ class Project(CursesApp):
          if self._featureEnabled('network'):
             cmakefile.write(' Qt6::Network')
          cmakefile.write(')\n')
+
+   def _createOtherFiles(self):
+
+      if self._featureEnabled('pre_compiled'):
+         if not os.path.exists(f'{self.name}.precompiled.h'):
+            with open(f'{self.name}.precompiled.h', 'w') as pre_compiled_header:
+               pre_compiled_header.write('#pragma once\n')
+               pre_compiled_header.write('\n')
+               pre_compiled_header.write('#include <QDebug>\n')
+
+      if self._featureEnabled('icon'):
+         if not os.path.exists(f'{self.name}.rc'):
+            with open(f'{self.name}.rc', 'w') as win_resource:
+               win_resource.write('#include "winver.h"\n')
+               win_resource.write(f'IDI_ICON1 ICON "Resources/{self.name}.ico"\n')
+
+      if self._featureEnabled('main_create'):
+         if self._featureEnabled('app_wrapper'):
+
+            if not os.path.exists('MainWindow.h'):
+               with open('MainWindow.h', 'w') as main_header:
+                  main_header.write('#ifndef MainWindowH\n')
+                  main_header.write('#define MainWindowH\n')
+                  main_header.write('\n')
+                  main_header.write('#include <QWidget>\n')
+                  main_header.write('\n')
+                  main_header.write('class MainWindow : public QWidget\n')
+                  main_header.write('{\n')
+                  main_header.write('   Q_OBJECT\n')
+                  main_header.write('public:\n')
+                  main_header.write('   MainWindow();\n')
+                  main_header.write('};\n')
+                  main_header.write('\n')
+                  main_header.write('  # endif // NOT MainWindowH\n')
+                  main_header.write('\n')
+
+            if not os.path.exists('MainWindow.cpp'):
+               with open('MainWindow.cpp', 'w') as main_source:
+                  main_source.write('#include "MainWindow.h"\n')
+                  main_source.write('\n')
+                  main_source.write('#include <QApplication>\n')
+                  main_source.write('\n')
+                  main_source.write('MainWindow::MainWindow()\n')
+                  main_source.write('   : QWidget(nullptr)\n')
+                  main_source.write('{\n')
+                  main_source.write('}\n')
+                  main_source.write('\n')
+                  main_source.write('// main function\n')
+                  main_source.write('\n')
+                  main_source.write('int main(int argc, char** argv)\n')
+                  main_source.write('{\n')
+                  main_source.write('   QApplication app(argc, argv);\n')
+                  main_source.write('\n')
+                  main_source.write('   MainWindow mw;\n')
+                  main_source.write('   mw.show();\n')
+                  main_source.write('\n')
+                  main_source.write('   return app.exec();\n')
+                  main_source.write('}\n')
+                  main_source.write('\n')
+         else:
+            if not os.path.exists('main.cpp'):
+               with open('main.cpp', 'w') as main_file:
+                  main_file.write('#include <QApplication>\n')
+                  main_file.write('\n')
+                  main_file.write('int main(int argc, char** argv)\n')
+                  main_file.write('{\n')
+                  main_file.write('   return 0;\n')
+                  main_file.write('}\n')
+                  main_file.write('\n')
 
    def _doGitThings(self):
 
