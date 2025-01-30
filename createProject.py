@@ -167,6 +167,10 @@ class Project(CursesApp):
          cmakefile.write('set(CMAKE_AUTORCC ON)\n')
          cmakefile.write('\n')
 
+         if self._featureEnabled('icon') or self._featureEnabled('pre_compiled'):
+            cmakefile.write('find_package(WaTools REQUIRED)\n')
+            cmakefile.write('\n')
+
          cmakefile.write('include_directories(${CMAKE_CURRENT_SOURCE_DIR})\n')
          cmakefile.write('\n')
          cmakefile.write('file(GLOB_RECURSE SOURCE_FILES\n')
@@ -182,9 +186,10 @@ class Project(CursesApp):
          cmakefile.write('\n')
 
          cmakefile.write('qt_add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n')
+
          if self._featureEnabled('pre_compiled'):
-            cmakefile.write('target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}.precompiled.h)\n')
-            cmakefile.write('target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}.precompiled.h)\n')
+            cmakefile.write('use_precompiled_headers()\n')
+            cmakefile.write('\n')
 
          if self._featureEnabled('app_wrapper'):
             cmakefile.write('\n')
@@ -194,16 +199,8 @@ class Project(CursesApp):
             cmakefile.write(')\n')
 
          if self._featureEnabled('icon'):
+            cmakefile.write('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME})\n')
             cmakefile.write('\n')
-            cmakefile.write('if(APPLE)\n')
-            cmakefile.write('   set(MACOSX_BUNDLE_ICON_FILE ${PROJECT_NAME}.icns)\n')
-            cmakefile.write('   set(APP_ICON ${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME}.icns)\n')
-            cmakefile.write('   set_source_files_properties(${APP_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")\n')
-            cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
-            cmakefile.write('elseif(WIN32)\n')
-            cmakefile.write('   set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.rc")\n')
-            cmakefile.write('   target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON})\n')
-            cmakefile.write('endif()\n')
 
          cmakefile.write('\n')
          cmakefile.write('target_link_libraries(${PROJECT_NAME} PRIVATE')
@@ -218,19 +215,6 @@ class Project(CursesApp):
          cmakefile.write(')\n')
 
    def _createOtherFiles(self):
-
-      if self._featureEnabled('pre_compiled'):
-         if not os.path.exists(f'{self.name}.precompiled.h'):
-            with open(f'{self.name}.precompiled.h', 'w') as pre_compiled_header:
-               pre_compiled_header.write('#pragma once\n')
-               pre_compiled_header.write('\n')
-               pre_compiled_header.write('#include <QDebug>\n')
-
-      if self._featureEnabled('icon'):
-         if not os.path.exists(f'{self.name}.rc'):
-            with open(f'{self.name}.rc', 'w') as win_resource:
-               win_resource.write('#include "winver.h"\n')
-               win_resource.write(f'IDI_ICON1 ICON "Resources/{self.name}.ico"\n')
 
       if self._featureEnabled('main_create'):
          if self._featureEnabled('app_wrapper'):
