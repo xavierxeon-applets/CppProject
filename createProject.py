@@ -173,7 +173,7 @@ class Project(CursesApp):
 
          cmakefile.write('include_directories(${CMAKE_CURRENT_SOURCE_DIR})\n')
          cmakefile.write('\n')
-         cmakefile.write('file(GLOB_RECURSE SOURCE_FILES\n')
+         cmakefile.write('file(GLOB SOURCE_FILES\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.h\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp\n')
@@ -181,8 +181,8 @@ class Project(CursesApp):
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.qrc\n')
          cmakefile.write(')\n')
          cmakefile.write('\n')
-         cmakefile.write('# remove build dir\n')
-         cmakefile.write('list(FILTER SOURCE_FILES EXCLUDE REGEX "${PROJECT_SOURCE_DIR}/build/.*")\n')
+
+         cmakefile.write('add_all_subdirs_files(${CMAKE_CURRENT_SOURCE_DIR})\n')
          cmakefile.write('\n')
 
          cmakefile.write('qt_add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n')
@@ -191,12 +191,9 @@ class Project(CursesApp):
             cmakefile.write('use_precompiled_headers()\n')
             cmakefile.write('\n')
 
-         if self._featureEnabled('app_wrapper'):
+         if self._featureEnabled('app_wrapper') and not self._featureEnabled('icon'):
+            cmakefile.write('set_application_no_icon()\n')
             cmakefile.write('\n')
-            cmakefile.write('set_target_properties(${PROJECT_NAME} PROPERTIES\n')
-            cmakefile.write('   WIN32_EXECUTABLE TRUE\n')
-            cmakefile.write('   MACOSX_BUNDLE TRUE\n')
-            cmakefile.write(')\n')
 
          if self._featureEnabled('icon'):
             cmakefile.write('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME})\n')
