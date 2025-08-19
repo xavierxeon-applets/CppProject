@@ -104,11 +104,10 @@ def createInline(className, nameSpaces):
 
    nameSpace = compileFullNameSpace(nameSpaces)
 
-   indent = 0
    with open(fileName, 'w') as outfile:
 
       def fprint(line):
-         outfile.write(' ' * 3 * indent + line + '\n')
+         outfile.write(line + '\n')
 
       fprint(f'#ifndef {fileBase}HPP')
       fprint(f'#define {fileBase}HPP')
@@ -122,15 +121,49 @@ def createInline(className, nameSpaces):
 
       fprint('')
       fprint(f'#endif // NOT {fileBase}HPP')
+      fprint('')
+
+def createExportheader(exportNames):
+
+   for name in exportNames:
+      macroName = name.upper() 
+
+      with open(f'{name}ExportDef.h', 'w') as outfile:
+
+         def fprint(line):
+            outfile.write(line + '\n')
+
+         fprint(f'#ifndef {name}ExportDefH')
+         fprint(f'#define {name}ExportDefH')
+         fprint('')
+         fprint('// clang-format off')
+         fprint('#if defined(__unix) || defined(__QNXNTO__) || defined(__APPLE__)')
+         fprint(f'   #define {macroName}_DECLSPEC')
+         fprint('#else')
+         fprint(f'   #ifdef EXTENSION_{macroName}')
+         fprint(f'      #define {macroName}_DECLSPEC __declspec(dllexport)')
+         fprint('   #else')
+         fprint(f'      #define {macroName}_DECLSPEC __declspec(dllimport)')
+         fprint('   #endif')
+         fprint('#endif')
+         fprint('// clang-format on')
+         fprint('')
+         fprint(f'#endif // NOT {name}ExportDefH')
+         fprint('')
 
 
 def main():
 
    parser = argparse.ArgumentParser(description='Create new C++ classes.')
-   parser.add_argument('classnames', metavar='CLASSES', type=str, nargs='+', help='list of classes to create')
-   parser.add_argument('-n', '--namespace', action='append', help='all classes are in this namespace')
-   parser.add_argument('-i', '--inline', action='store_true', help='create HPP file')
-   parser.add_argument('-s', '--nosource', action='store_true', help='do not create CPP file')
+
+   classGroup = parser.add_argument_group('class creation')
+   classGroup.add_argument('classnames', metavar='CLASSES', type=str, nargs='*', help='list of classes to create')
+   classGroup.add_argument('-n', '--namespace', action='append', help='all classes are in this namespace (you can use several -n options)')
+   classGroup.add_argument('-i', '--inline', action='store_true', help='create HPP file')
+   classGroup.add_argument('-s', '--nosource', action='store_true', help='only create header')
+
+   helperGroup = parser.add_argument_group('helper')
+   helperGroup.add_argument('-e', '--export', action='append', help='create export header')
 
    args = parser.parse_args()  # will quit here if help is called
 
@@ -138,14 +171,17 @@ def main():
    nameSpaces = args.namespace
    inline = args.inline
    nosource = args.nosource
+   export = args.export
 
-   for className in classNames:
-
-      createHeader(className, nameSpaces, inline)
-      if inline:
-         createInline(className, nameSpaces)
-      if not nosource:
-         createSource(className, nameSpaces)
+   if export:
+      createExportheader(export)
+   else:
+      for className in classNames:
+         createHeader(className, nameSpaces, inline)
+         if inline:
+            createInline(className, nameSpaces)
+         elif not nosource:
+            createSource(className, nameSpaces)
 
 
 if __name__ == '__main__':
