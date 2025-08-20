@@ -7,6 +7,7 @@ import subprocess
 
 from .cmake_file import CMakeFile
 from .cpp_files import CppFiles
+from .logger import log
 
 
 class Project:
@@ -67,7 +68,7 @@ class Project:
 
    def _create(self):
 
-      print(f'Creating project {self.name} @ {self.projectPath}')
+      log(f'Creating project {self.name} @ {self.projectPath}')
       os.chdir(self.projectPath)
 
       cmake_file = CMakeFile(self)

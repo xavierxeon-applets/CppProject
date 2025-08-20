@@ -6,16 +6,20 @@ from .mainwidget_ui import Ui_MainWidget
 from PySide6.QtCore import QSettings
 from PySide6.QtWidgets import QButtonGroup
 
+from .logger import Logger
+
 
 class MainWidget(QWidget, Project, Ui_MainWidget):
 
    def __init__(self):
 
       QWidget.__init__(self)
-      Project.__init__(self)
-
       self.setupUi(self)
+
       self.setWindowTitle(f'Create Project [{self.name}]')
+      self.logger = Logger(self.logEdit)
+
+      Project.__init__(self)
 
       typeButton = QButtonGroup(self)
       typeButton.setExclusive(True)
@@ -63,4 +67,5 @@ class MainWidget(QWidget, Project, Ui_MainWidget):
 
    def create(self):
 
+      self.logEdit.clear()
       self._create()
