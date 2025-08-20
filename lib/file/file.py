@@ -1,7 +1,7 @@
 #
 
 
-from ..file_wrapper import FileWrapper
+from ..file_writer import FileWriter
 
 
 def _compileFileBae(className, nameSpaces):
@@ -25,7 +25,7 @@ def createHeader(className, nameSpaces, inline):
    fileBase = _compileFileBae(className, nameSpaces)
    fileName = fileBase + '.h'
 
-   with FileWrapper(fileName) as line:
+   with FileWriter(fileName) as line:
 
       line(f'#ifndef {fileBase}H')
       line(f'#define {fileBase}H')
@@ -65,7 +65,7 @@ def createSource(className, nameSpaces):
 
    nameSpace = _compileFullNameSpace(nameSpaces)
 
-   with FileWrapper(fileName) as line:
+   with FileWriter(fileName) as line:
 
       line(f'#include "{fileBase}.h"')
       line()
@@ -82,7 +82,7 @@ def createInline(className, nameSpaces):
 
    nameSpace = _compileFullNameSpace(nameSpaces)
 
-   with FileWrapper(fileName) as line:
+   with FileWriter(fileName) as line:
 
       line(f'#ifndef {fileBase}HPP')
       line(f'#define {fileBase}HPP')

@@ -1,6 +1,6 @@
 #
 
-from ..file_wrapper import FileWrapper
+from ..file_writer import FileWriter
 
 
 class CMakeFile:
@@ -11,7 +11,7 @@ class CMakeFile:
 
    def generate(self):
 
-      with FileWrapper('CMakeLists.txt') as line:
+      with FileWriter('CMakeLists.txt') as line:
          line(f'cmake_minimum_required(VERSION 3.16)')
          line(f'project({self.project})')
          line(f'set(CMAKE_CXX_STANDARD 17)')

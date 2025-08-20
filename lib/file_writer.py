@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt
 from .logger import log
 
 
-class FileWrapper:
+class FileWriter:
 
    def __init__(self, fileName):
 
