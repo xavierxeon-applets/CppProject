@@ -117,10 +117,11 @@ class CMakeFile:
       line(f'target_link_libraries(${{PROJECT_NAME}} PRIVATE {componentsList})')
       line()
 
+      line('# QML')
       if self.project._features & Features.CreateQmlType:
-         line('# QML')
          line('add_qml_module_dir(QmlTypes Display)')
-         line()
+      line('add_qml_sources(Gui)')
+      line()
 
    def writeWidgetsPart(self, line):
 
