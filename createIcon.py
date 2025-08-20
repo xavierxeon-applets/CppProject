@@ -8,6 +8,9 @@ import subprocess
 
 import xml.etree.ElementTree as et
 
+script_path = pathlib.Path(__file__).parent.resolve()
+script_path = str(script_path)
+
 
 def createIcons(iconNameList):
 
@@ -27,7 +30,11 @@ def createIcons(iconNameList):
    et.indent(tree, space=" ", level=0)
 
    for name in iconNameList:
-      tree.write(name, encoding='UTF-8', xml_declaration=True, short_empty_elements=False)
+      if name.endswith('.svg') or name.endswith('.afdesign'):
+         continue
+
+      tree.write(name + '.svg', encoding='UTF-8', xml_declaration=True, short_empty_elements=False)
+      shutil.copy(script_path + '/Icon.afdesign', name + '.afdesign')
 
 
 def gatherFromDesktop():
@@ -102,8 +109,7 @@ def addToResourceFile():
 
 def createIconSet(iconNameList):
 
-   path = pathlib.Path(__file__).parent.resolve()
-   path = str(path) + '/icon_set.sh'
+   path = script_path + '/icon_set.sh'
    for name in iconNameList:
       subprocess.run([path, name], check=True)
 
@@ -121,12 +127,6 @@ def main():
 
    # parse icon names list
    iconNameList = args.iconnames
-   for index in range(len(iconNameList)):
-      name = iconNameList[index]
-      if name.endswith('.svg'):
-         continue
-      iconNameList[index] = name + '.svg'
-
    if iconNameList and args.create:
       createIcons(iconNameList)
       return
