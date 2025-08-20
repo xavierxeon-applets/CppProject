@@ -3,10 +3,9 @@ from PySide6.QtWidgets import QWidget
 from .project import Project
 from .mainwidget_ui import Ui_MainWidget
 
-from PySide6.QtCore import QSettings
 from PySide6.QtWidgets import QButtonGroup
 
-from .logger import Logger
+from ..logger import Logger
 
 
 class MainWidget(QWidget, Project, Ui_MainWidget):
@@ -53,17 +52,6 @@ class MainWidget(QWidget, Project, Ui_MainWidget):
       featuresButton.addButton(self.gitCheck, Project.Features.CreateGit)
 
       self.startButton.clicked.connect(self.create)  # can not call create of project directly
-
-      # settings
-      settings = QSettings()
-      self.restoreGeometry(settings.value('geometry', b''))
-
-   def closeEvent(self, event):
-
-      settings = QSettings()
-      settings.setValue('geometry', self.saveGeometry())
-
-      event.accept()
 
    def create(self):
 

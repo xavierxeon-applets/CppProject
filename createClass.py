@@ -2,7 +2,7 @@
 
 import argparse
 
-from lib.class_tools import *
+from lib.file import *
 
 
 def main():

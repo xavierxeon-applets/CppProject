@@ -1,7 +1,7 @@
 #
 
-import os
-import sys
+
+from ..file_wrapper import FileWrapper
 
 
 def _compileFileBae(className, nameSpaces):
@@ -20,107 +20,83 @@ def _compileFullNameSpace(nameSpaces):
       return ''
 
 
-def _abortIfExists(fileName):
-
-   if not os.path.exists(fileName):
-      return
-
-   print(fileName, 'already exists')
-   sys.exit(1)
-
-
 def createHeader(className, nameSpaces, inline):
 
    fileBase = _compileFileBae(className, nameSpaces)
    fileName = fileBase + '.h'
-   _abortIfExists(fileName)
 
-   indent = 0
-   with open(fileName, 'w') as outfile:
+   with FileWrapper(fileName) as line:
 
-      def fprint(line):
-         outfile.write(' ' * 3 * indent + line + '\n')
-
-      fprint(f'#ifndef {fileBase}H')
-      fprint(f'#define {fileBase}H')
-      fprint('')
+      line(f'#ifndef {fileBase}H')
+      line(f'#define {fileBase}H')
+      line()
 
       if nameSpaces:
          for nameSpace in nameSpaces:
-            fprint(f'namespace {nameSpace}')
-            fprint('{')
-            indent += 1
+            line(f'namespace {nameSpace}')
+            line('{')
+            line.indent(1)
 
-      fprint(f'class {className}')
-      fprint('{')
-      fprint('public:')
-      indent += 1
-      fprint(f'{className}();')
-      indent -= 1
-      fprint('};')
+      line(f'class {className}')
+      line('{')
+      line('public:')
+      line(f'   {className}();')
+      line('};')
 
       if nameSpaces:
          for nameSpace in reversed(nameSpaces):
-            indent -= 1
-            fprint(f'\u007d // namespace {nameSpace}')
+            line.indent(-1)
+            line(f'\u007d // namespace {nameSpace}')
 
       if inline:
-         fprint('')
-         fprint(f'#ifndef {fileBase}HPP')
-         fprint(f'#include "{fileBase}.hpp"')
-         fprint(f'#endif // NOT {fileBase}HPP')
+         line()
+         line(f'#ifndef {fileBase}HPP')
+         line(f'#include "{fileBase}.hpp"')
+         line(f'#endif // NOT {fileBase}HPP')
 
-      fprint('')
-      fprint(f'#endif // NOT {fileBase}H')
+      line()
+      line(f'#endif // NOT {fileBase}H')
 
 
 def createSource(className, nameSpaces):
 
    fileBase = _compileFileBae(className, nameSpaces)
    fileName = fileBase + '.cpp'
-   _abortIfExists(fileName)
 
    nameSpace = _compileFullNameSpace(nameSpaces)
 
-   with open(fileName, 'w') as outfile:
+   with FileWrapper(fileName) as line:
 
-      def fprint(line):
-         outfile.write(line + '\n')
-
-      fprint(f'#include "{fileBase}.h"')
-      fprint('')
-      fprint(f'{nameSpace}{className}::{className}()')
-      fprint('{')
-      fprint('}')
-      fprint('')
+      line(f'#include "{fileBase}.h"')
+      line()
+      line(f'{nameSpace}{className}::{className}()')
+      line('{')
+      line('}')
+      line()
 
 
 def createInline(className, nameSpaces):
 
    fileBase = _compileFileBae(className, nameSpaces)
    fileName = fileBase + '.hpp'
-   _abortIfExists(fileName)
 
    nameSpace = _compileFullNameSpace(nameSpaces)
 
-   with open(fileName, 'w') as outfile:
+   with FileWrapper(fileName) as line:
 
-      def fprint(line):
-         outfile.write(line + '\n')
+      line(f'#ifndef {fileBase}HPP')
+      line(f'#define {fileBase}HPP')
+      line()
+      line(f'#include "{fileBase}.h"')
+      line()
 
-      fprint(f'#ifndef {fileBase}HPP')
-      fprint(f'#define {fileBase}HPP')
-      fprint('')
-      fprint(f'#include "{fileBase}.h"')
-      fprint('')
+      line(f'inline {nameSpace}{className}::{className}()')
+      line('{')
+      line('}')
 
-      fprint(f'inline {nameSpace}{className}::{className}()')
-      fprint('{')
-      fprint('}')
-
-      fprint('')
-      fprint(f'#endif // NOT {fileBase}HPP')
-      fprint('')
+      line()
+      line(f'#endif // NOT {fileBase}HPP')
+      line()
 
 
 def createExportheader(exportNames):

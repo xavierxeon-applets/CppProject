@@ -7,7 +7,7 @@ import subprocess
 
 from .cmake_file import CMakeFile
 from .cpp_files import CppFiles
-from .logger import log
+from ..logger import log
 
 
 class Project:

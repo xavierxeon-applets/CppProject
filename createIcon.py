@@ -3,7 +3,7 @@
 import argparse
 
 
-from lib.icon_tools import *
+from lib.icon import *
 
 
 def main():

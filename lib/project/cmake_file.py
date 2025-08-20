@@ -1,6 +1,6 @@
 #
 
-from .file_wrapper import FileWrapper
+from ..file_wrapper import FileWrapper
 
 
 class CMakeFile:

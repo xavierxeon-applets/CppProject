@@ -1,13 +1,14 @@
 #
 
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QTextEdit
 
 
 class Logger:
 
    me = None
 
-   def __init__(self, textEdit):
+   def __init__(self, textEdit: QTextEdit):
 
       Logger.me = self
       self.textEdit = textEdit
