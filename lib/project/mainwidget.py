@@ -6,6 +6,7 @@ from .mainwidget_ui import Ui_MainWidget
 from PySide6.QtWidgets import QButtonGroup
 
 from ..logger import Logger
+from .defs import *
 
 
 class MainWidget(QWidget, Project, Ui_MainWidget):
@@ -26,33 +27,33 @@ class MainWidget(QWidget, Project, Ui_MainWidget):
       typeButton.setExclusive(True)
       typeButton.idClicked.connect(self.typeChanged)
 
-      typeButton.addButton(self.widgetsRadio, Project.Type.Widgets)
-      typeButton.addButton(self.qmlRadio, Project.Type.QML)
-      typeButton.addButton(self.cppRadio, Project.Type.Cpp)
+      typeButton.addButton(self.widgetsRadio, Type.Widgets)
+      typeButton.addButton(self.qmlRadio, Type.QML)
+      typeButton.addButton(self.cppRadio, Type.Cpp)
 
       targetButton = QButtonGroup(self)
       targetButton.setExclusive(True)
       targetButton.idClicked.connect(self.targetChanged)
 
-      targetButton.addButton(self.appRadio, Project.Target.Application)
-      targetButton.addButton(self.sharedLibRadio, Project.Target.SharedLibrary)
-      targetButton.addButton(self.staticLibRadio, Project.Target.StaticLibrary)
+      targetButton.addButton(self.appRadio, Target.Application)
+      targetButton.addButton(self.sharedLibRadio, Target.SharedLibrary)
+      targetButton.addButton(self.staticLibRadio, Target.StaticLibrary)
 
       componentsButton = QButtonGroup(self)
       componentsButton.setExclusive(False)
       componentsButton.idToggled.connect(self.componentsChanged)
 
-      componentsButton.addButton(self.compNetworkCheck, Project.Components.Network)
+      componentsButton.addButton(self.compNetworkCheck, Components.Network)
 
       featuresButton = QButtonGroup(self)
       featuresButton.setExclusive(False)
       featuresButton.idToggled.connect(self.featuresChanged)
 
-      featuresButton.addButton(self.precompiledCheck, Project.Features.PreCompiledHeader)
-      featuresButton.addButton(self.iconCheck, Project.Features.AppIcon)
-      featuresButton.addButton(self.mainCheck, Project.Features.CreateMain)
-      featuresButton.addButton(self.gitCheck, Project.Features.CreateGit)
-      featuresButton.addButton(self.qmlDummyCheck, Project.Features.CreateQmlType)
+      featuresButton.addButton(self.precompiledCheck, Features.PreCompiledHeader)
+      featuresButton.addButton(self.iconCheck, Features.AppIcon)
+      featuresButton.addButton(self.mainCheck, Features.CreateMain)
+      featuresButton.addButton(self.gitCheck, Features.CreateGit)
+      featuresButton.addButton(self.qmlDummyCheck, Features.CreateQmlType)
 
       self.startButton.clicked.connect(self.create)  # can not call create of project directly
 

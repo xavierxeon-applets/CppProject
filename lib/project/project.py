@@ -1,6 +1,6 @@
 #
 
-from enum import IntEnum, IntFlag, auto
+
 import os
 import shutil
 import subprocess
@@ -8,33 +8,15 @@ import subprocess
 from PySide6.QtCore import Qt
 
 from ..logger import log
+from ..file_writer import FileWriter
 from .cmake_file import CMakeFile
 from .cpp_files import CppFiles
 from .files_model import FilesModel
 from .qml_files import QmlFiles
+from .defs import *
 
 
 class Project:
-
-   class Type(IntEnum):
-      Widgets = 0
-      QML = 1
-      Cpp = 2
-
-   class Target(IntEnum):
-      Application = 0
-      SharedLibrary = 1
-      StaticLibrary = 2
-
-   class Components(IntFlag):
-      Network = auto()
-
-   class Features(IntFlag):
-      PreCompiledHeader = auto()
-      AppIcon = auto()
-      CreateMain = auto()
-      CreateGit = auto()
-      CreateQmlType = auto()
 
    def __init__(self):
 
@@ -50,10 +32,10 @@ class Project:
       self.cpp_files = CppFiles(self, self.files_model)
       self.qml_files = QmlFiles(self, self.files_model)
 
-      self._type = Project.Type.Widgets
-      self._target = Project.Target.Application
+      self._type = Type.Widgets
+      self._target = Target.Application
       self._components = 0
-      self._features = Project.Features.PreCompiledHeader | Project.Features.CreateMain
+      self._features = Features.PreCompiledHeader | Features.CreateMain
 
    def typeChanged(self, newType):
 
@@ -83,7 +65,12 @@ class Project:
       os.chdir(self.projectPath)
 
       self.cmake_file.generate()
-      self.cpp_files.generate()
+
+      if self._features & Features.CreateMain:
+         self.cpp_files.generate()
+
+      if self._features & Features.CreateQmlType:
+         self.qml_files.generate()
 
       shutil.copy(self._scriptDir + '/_clang-format', '_clang-format')
       self._doGitThings()
@@ -93,27 +80,24 @@ class Project:
 
    def _doGitThings(self):
 
-      with open('.gitignore', 'w') as gitignore:
-         gitignore.write('/bin\n')
-         gitignore.write('**/*.user\n')
-         gitignore.write('**/build\n')
+      with FileWriter('.gitignore') as line:
+         line('**/*.user')
+         line('**/build')
 
       gitAvailable = os.path.exists('.git')
 
-      if (self._features & Project.Features.CreateGit) and not gitAvailable:
+      if (self._features & Features.CreateGit) and not gitAvailable:
          log('Initializing git repository')
          subprocess.run(['git', 'init'])
          gitAvailable = True
 
       if not gitAvailable:
-         log('Git repository not initialized, skipping git operations', Qt.blue)
+         log('No git repository', Qt.blue)
          return
 
       log('Adding files to git repository')
 
-      subprocess.run(['git', 'add', '.gitignore'])
-      subprocess.run(['git', 'add', '_clang-format'])
-      subprocess.run(['git', 'add', 'CMakeLists.txt'])
-      if os.path.exists(f'{self.name}.precompiled.h'):
-         subprocess.run(['git', 'add', f'{self.name}.precompiled.h'])
+      subprocess.run(['git', 'add', '.gitignore', '_clang-format'])
+      subprocess.run(['git', 'add', '*'])
+
       subprocess.run(['git', 'commit', '-m', '"first commit"'])
