@@ -1,6 +1,6 @@
 #
 
-class CppFiles:
+class QmlFiles:
 
    def __init__(self, project, files_model):
 

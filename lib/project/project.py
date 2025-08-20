@@ -5,9 +5,13 @@ import os
 import shutil
 import subprocess
 
+from PySide6.QtCore import Qt
+
+from ..logger import log
 from .cmake_file import CMakeFile
 from .cpp_files import CppFiles
-from ..logger import log
+from .files_model import FilesModel
+from .qml_files import QmlFiles
 
 
 class Project:
@@ -30,6 +34,7 @@ class Project:
       AppIcon = auto()
       CreateMain = auto()
       CreateGit = auto()
+      CreateQmlType = auto()
 
    def __init__(self):
 
@@ -38,6 +43,12 @@ class Project:
 
       scriptDir = os.path.abspath(__file__)
       self._scriptDir = os.path.dirname(scriptDir)
+
+      self.files_model = FilesModel(self)
+
+      self.cmake_file = CMakeFile(self, self.files_model)
+      self.cpp_files = CppFiles(self, self.files_model)
+      self.qml_files = QmlFiles(self, self.files_model)
 
       self._type = Project.Type.Widgets
       self._target = Project.Target.Application
@@ -71,14 +82,14 @@ class Project:
       log(f'Creating project {self.name} @ {self.projectPath}')
       os.chdir(self.projectPath)
 
-      cmake_file = CMakeFile(self)
-      cmake_file.generate()
-
-      cpp_files = CppFiles(self)
-      cpp_files.generate()
+      self.cmake_file.generate()
+      self.cpp_files.generate()
 
       shutil.copy(self._scriptDir + '/_clang-format', '_clang-format')
       self._doGitThings()
+
+      log('Project created successfully')
+      self.files_model.update()
 
    def _doGitThings(self):
 
@@ -87,14 +98,18 @@ class Project:
          gitignore.write('**/*.user\n')
          gitignore.write('**/build\n')
 
-      gitAvaialbale = os.path.exists('.git')
+      gitAvailable = os.path.exists('.git')
 
-      if (self._features & Project.Features.CreateGit) and not gitAvaialbale:
+      if (self._features & Project.Features.CreateGit) and not gitAvailable:
+         log('Initializing git repository')
          subprocess.run(['git', 'init'])
-         gitAvaialbale = True
+         gitAvailable = True
 
-      if not gitAvaialbale:
+      if not gitAvailable:
+         log('Git repository not initialized, skipping git operations', Qt.blue)
          return
+
+      log('Adding files to git repository')
 
       subprocess.run(['git', 'add', '.gitignore'])
       subprocess.run(['git', 'add', '_clang-format'])

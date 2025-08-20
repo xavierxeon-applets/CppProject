@@ -27,7 +27,7 @@ class FileWriter:
       if not self._file:
          return
 
-      log(f'Created file {self._fileName}', Qt.green)
+      log(f'Created file {self._fileName}', Qt.darkGreen)
       self._file.close()
 
    def __call__(self, content=None):

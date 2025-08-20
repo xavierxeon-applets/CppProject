@@ -20,6 +20,8 @@ class MainWidget(QWidget, Project, Ui_MainWidget):
 
       Project.__init__(self)
 
+      self.overwriteTree.setModel(self.files_model)
+
       typeButton = QButtonGroup(self)
       typeButton.setExclusive(True)
       typeButton.idClicked.connect(self.typeChanged)
@@ -50,6 +52,7 @@ class MainWidget(QWidget, Project, Ui_MainWidget):
       featuresButton.addButton(self.iconCheck, Project.Features.AppIcon)
       featuresButton.addButton(self.mainCheck, Project.Features.CreateMain)
       featuresButton.addButton(self.gitCheck, Project.Features.CreateGit)
+      featuresButton.addButton(self.qmlDummyCheck, Project.Features.CreateQmlType)
 
       self.startButton.clicked.connect(self.create)  # can not call create of project directly
 
