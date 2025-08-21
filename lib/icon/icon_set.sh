@@ -16,9 +16,9 @@ RESOLUTIONS=(
    32,16x16@2x
    32,32x32
    64,32x32@2x
-   120,60x60@2x
+   120,120x120
    128,128x128
-   152,76x76@2x
+   152,152x152
    167,167x167
    256,128x128@2x
    256,256x256
@@ -29,8 +29,8 @@ RESOLUTIONS=(
 )
 
 RESOLUTIONS_KEEP=(
-   60x60@2x
-   76x76@2x
+   120x120
+   152x152
    167x167
    1024x1024
 )
@@ -52,7 +52,7 @@ do
    mkdir ios
    for LABEL in ${RESOLUTIONS_KEEP[@]}
    do
-      cp "$ICONSET_DIR"/icon_${LABEL}.png  ios/AppIcon1${LABEL}.png
+      cp "$ICONSET_DIR"/icon_${LABEL}.png  ios/AppIcon${LABEL}.png
    done
 
    iconutil -c icns "$ICONSET_DIR"
