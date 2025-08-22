@@ -49,10 +49,14 @@ do
       svg2png -w $SIZE -h $SIZE "$SVG" "$ICONSET_DIR"/icon_${LABEL}.png
    done
 
-   mkdir ios
+   if [ ! -d Assets.xcassets/AppIcon.appiconset ]
+   then
+      mkdir -p Assets.xcassets/AppIcon.appiconset
+   fi
+   
    for LABEL in ${RESOLUTIONS_KEEP[@]}
    do
-      cp "$ICONSET_DIR"/icon_${LABEL}.png  ios/AppIcon${LABEL}.png
+      cp "$ICONSET_DIR"/icon_${LABEL}.png  Assets.xcassets/AppIcon.appiconset/AppIcon${LABEL}.png
    done
 
    iconutil -c icns "$ICONSET_DIR"
