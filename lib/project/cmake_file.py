@@ -150,9 +150,6 @@ class CMakeFile:
       line(')')
       line()
 
-      line('add_all_subdirs_files(${CMAKE_CURRENT_SOURCE_DIR})')
-      line()
-
       if self.project._target & Target.SharedLibrary:
          line('qt_add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})')
       elif self.project._target & Target.StaticLibrary:
@@ -163,6 +160,9 @@ class CMakeFile:
       if self.project._features & Features.PreCompiledHeader:
          line('use_precompiled_headers()')
          line()
+
+      line('add_all_subdirs_files(${CMAKE_CURRENT_SOURCE_DIR})')
+      line()
 
       if self.project._features & Features.AppIcon:
          line('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME})')
