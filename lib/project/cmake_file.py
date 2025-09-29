@@ -1,7 +1,6 @@
 #
 
 from PySide6.QtCore import Qt
-from cv2 import line
 
 from ..file_writer import FileWriter
 from .defs import *
