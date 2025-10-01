@@ -102,27 +102,25 @@ def createInline(className, nameSpaces):
 def createExportheader(exportNames):
 
    for name in exportNames:
-      macroName = name.upper()
 
-      with open(f'{name}ExportDef.h', 'w') as outfile:
+      with FileWriter(f'{name}ExportDef.h') as line:
 
-         def fprint(line):
-            outfile.write(line + '\n')
+         macroName = name.upper()
 
-         fprint(f'#ifndef {name}ExportDefH')
-         fprint(f'#define {name}ExportDefH')
-         fprint('')
-         fprint('// clang-format off')
-         fprint('#if defined(__unix) || defined(__QNXNTO__) || defined(__APPLE__)')
-         fprint(f'   #define {macroName}_DECLSPEC')
-         fprint('#else')
-         fprint(f'   #ifdef EXTENSION_{macroName}')
-         fprint(f'      #define {macroName}_DECLSPEC __declspec(dllexport)')
-         fprint('   #else')
-         fprint(f'      #define {macroName}_DECLSPEC __declspec(dllimport)')
-         fprint('   #endif')
-         fprint('#endif')
-         fprint('// clang-format on')
-         fprint('')
-         fprint(f'#endif // NOT {name}ExportDefH')
-         fprint('')
+         line(f'#ifndef {name}ExportDefH')
+         line(f'#define {name}ExportDefH')
+         line('')
+         line('// clang-format off')
+         line('#if defined(__unix) || defined(__QNXNTO__) || defined(__APPLE__)')
+         line(f'   #define {macroName}_DECLSPEC')
+         line('#else')
+         line(f'   #ifdef EXTENSION_{macroName}')
+         line(f'      #define {macroName}_DECLSPEC __declspec(dllexport)')
+         line('   #else')
+         line(f'      #define {macroName}_DECLSPEC __declspec(dllimport)')
+         line('   #endif')
+         line('#endif')
+         line('// clang-format on')
+         line('')
+         line(f'#endif // NOT {name}ExportDefH')
+         line('')
