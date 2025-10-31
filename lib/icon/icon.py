@@ -29,11 +29,11 @@ def createIcons(iconNameList):
    et.indent(tree, space=" ", level=0)
 
    for name in iconNameList:
-      if name.endswith('.svg') or name.endswith('.afdesign'):
+      if name.endswith('.svg') or name.endswith('.af'):
          continue
 
       tree.write(name + '.svg', encoding='UTF-8', xml_declaration=True, short_empty_elements=False)
-      shutil.copy(script_path + '/Icon.afdesign', name + '.afdesign')
+      shutil.copy(script_path + '/Icon.af', name + '.af')
 
 
 def gatherFromDesktop():
@@ -43,7 +43,7 @@ def gatherFromDesktop():
    for entry in os.scandir(desktop):
       if not entry.is_file():
          continue
-      if not entry.name.endswith('.svg') and not entry.name.endswith('.afdesign'):
+      if not entry.name.endswith('.svg') and not entry.name.endswith('.af'):
          continue
       print(entry.name)
       shutil.move(entry.path, os.getcwd() + '/' + entry.name)

@@ -14,7 +14,7 @@ def main():
    parser = argparse.ArgumentParser(description='do things with icons.')
    parser.add_argument('iconnames', metavar='ICONS', type=str, nargs='*', help='list of icons to create')
    parser.add_argument('-c', '--create', action='store_true', help='create new SVG icon templates')
-   parser.add_argument('-g', '--gather', action='store_true', help='move all SVG and afdesign files from desktop here')
+   parser.add_argument('-g', '--gather', action='store_true', help='move all SVG and af files from desktop here')
    parser.add_argument('-r', '--resource', action='store_true', help='add all SVG files to existing resource file')
    parser.add_argument('-s', '--set', action='store_true', help='create an icon set from a SVG file')
 
