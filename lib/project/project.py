@@ -83,6 +83,7 @@ class Project:
       with FileWriter('.gitignore') as line:
          line('**/*.user')
          line('**/build')
+         line('/.qtcreator')
 
       gitAvailable = os.path.exists('.git')
 
