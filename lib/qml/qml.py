@@ -9,6 +9,8 @@ def createQml(fileName):
 
    with FileWriter(fileName) as line:
       line('import QtQuick')
+      line('import QtQuick.Layouts')
+      line('import QtQuick.Controls')
       line()
       line('Rectangle')
       line('{')
