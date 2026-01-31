@@ -9,13 +9,6 @@
 import signal
 import sys
 
-try:
-   from PySide6.QtWidgets import QApplication
-   from PySide6.QtCore import QTimer
-except ImportError:
-   print("pip3 install --user --upgrade pyside6")
-   sys.exit(1)
-
 from wapy.qt_tools import autoUIC
 
 
