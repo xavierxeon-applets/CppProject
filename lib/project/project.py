@@ -28,22 +28,24 @@ class Project:
 
       self.files_model = FilesModel(self)
 
-      self.cmake_file = CMakeFile(self, self.files_model)
-      self.cpp_files = CppFiles(self, self.files_model)
-      self.qml_files = QmlFiles(self, self.files_model)
-
       self._type = Type.Widgets
       self._target = Target.Application
       self._components = 0
       self._features = Features.PreCompiledHeader | Features.CreateMain
 
+      self.cmake_file = CMakeFile(self, self.files_model)
+      self.cpp_files = CppFiles(self, self.files_model)
+      self.qml_files = QmlFiles(self, self.files_model)
+
    def typeChanged(self, newType):
 
       self._type = newType
+      self._update()
 
    def targetChanged(self, newTarget):
 
       self._target = newTarget
+      self._update()
 
    def componentsChanged(self, newComponents, checked):
 
@@ -51,6 +53,7 @@ class Project:
          self._components |= newComponents
       else:
          self._components &= ~newComponents
+      self._update()
 
    def featuresChanged(self, newFeatures, checked):
 
@@ -58,6 +61,12 @@ class Project:
          self._features |= newFeatures
       else:
          self._features &= ~newFeatures
+      self._update()
+
+   def _update(self):
+
+      self.cpp_files.update()
+      self.qml_files.update()
 
    def _create(self):
 

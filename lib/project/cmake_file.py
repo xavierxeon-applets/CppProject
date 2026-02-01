@@ -13,7 +13,7 @@ class CMakeFile:
       self.project = project
       self.files_model = files_model
 
-      files_model.registerFile('CMakeLists.txt')
+      files_model.registerFile('CMakeLists.txt', True)
 
    def generate(self):
 
@@ -106,7 +106,7 @@ class CMakeFile:
          line()
 
       if self.project._features & Features.AppIcon:
-         line('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME})')
+         line('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources)')
       else:
          line('set_application_no_icon()')
       line()
@@ -118,8 +118,8 @@ class CMakeFile:
 
       line('# QML')
       if self.project._features & Features.CreateQmlType:
-         line('add_qml_module_dir(QmlTypes Display)')
-      line('add_qml_sources(Gui)')
+         line(f'add_qml_module_dir(QmlTypes {self.project.name})')
+      line('add_qml_source_dir(Gui)')
       line()
 
    def writeWidgetsPart(self, line):
@@ -164,7 +164,7 @@ class CMakeFile:
       line()
 
       if self.project._features & Features.AppIcon:
-         line('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources/${PROJECT_NAME})')
+         line('set_application_icon(${CMAKE_CURRENT_SOURCE_DIR}/Resources)')
       else:
          line('set_application_no_icon()')
       line()
@@ -176,5 +176,5 @@ class CMakeFile:
 
       if self.project._features & Features.CreateQmlType:
          line('# QML')
-         line('add_qml_module_dir(QmlTypes Display)')
+         line(f'add_qml_module_dir(QmlTypes {self.project.name})')
          line()

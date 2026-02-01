@@ -14,11 +14,22 @@ class FilesModel(QStandardItemModel):
 
       QStandardItemModel.__init__(self)
 
-   def registerFile(self, filePath):
+   def registerFile(self, filePath, enabled):
 
-      item = QStandardItem(filePath)
+      items = self.findItems(filePath, Qt.MatchExactly)
+      item = items[0] if items else None
 
-      self.appendRow(item)
+      if enabled:
+         if item:
+            return
+         item = QStandardItem(filePath)
+         self.appendRow(item)
+      else:
+         if not items:
+            return
+         self.removeRow(item.row())
+         del item
+
       self.update()
 
    def maybeClean(self, filePath):

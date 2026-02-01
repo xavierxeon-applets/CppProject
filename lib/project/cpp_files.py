@@ -11,9 +11,14 @@ class CppFiles:
       self.project = project
       self.files_model = files_model
 
-      files_model.registerFile('MainWidget.h')
-      files_model.registerFile('MainWidget.cpp')
-      files_model.registerFile('main.cpp')
+      self.update()
+
+   def update(self):
+
+      self.files_model.registerFile('MainWidget.h', self.project._type == Type.Widgets)
+      self.files_model.registerFile('MainWidget.cpp', self.project._type == Type.Widgets)
+
+      self.files_model.registerFile('main.cpp', self.project._type != Type.Widgets)
 
    def generate(self):
 
