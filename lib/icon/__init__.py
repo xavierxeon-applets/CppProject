@@ -1,3 +1,4 @@
 #
 
-from .icon import createIcons, gatherFromDesktop, addToResourceFile, createIconSet
+from .icon import createIcons, gatherFromDesktop, addToResourceFile
+from .icon import createIconSetPc, createIconSetIos, createIconSetAndroid

@@ -106,8 +106,22 @@ def addToResourceFile():
    tree.write(rcFileName, encoding='UTF-8', short_empty_elements=False)
 
 
-def createIconSet(iconNameList):
+def createIconSetPc(iconNameList):
 
-   path = script_path + '/icon_set.sh'
+   path = script_path + '/icon_set.pc.sh'
+   for name in iconNameList:
+      subprocess.run([path, name], check=True)
+
+
+def createIconSetIos(iconNameList):
+
+   path = script_path + '/icon_set.ios.sh'
+   for name in iconNameList:
+      subprocess.run([path, name], check=True)
+
+
+def createIconSetAndroid(iconNameList):
+
+   path = script_path + '/icon_set.android.sh'
    for name in iconNameList:
       subprocess.run([path, name], check=True)

@@ -10,7 +10,6 @@ then
    brew install imagemagick
 fi
 
-
 RESOLUTIONS=(
    16,16x16
    32,16x16@2x
@@ -28,17 +27,12 @@ RESOLUTIONS=(
    1024,1024x1024
 )
 
-RESOLUTIONS_KEEP=(
-   120x120
-   152x152
-   167x167
-   1024x1024
-)
-
 for SVG in $@
 do
    BASE=$(basename "$SVG" | sed 's/\.[^\.]*$//')
-   echo "Processing $SVG into iconset for $BASE"
+   echo "Processing $SVG into PC iconset for $BASE"
+
+   # create iconset
    ICONSET="$BASE.iconset"
    ICONSET_DIR="./$ICONSET"
    mkdir -p "$ICONSET_DIR"
@@ -48,20 +42,12 @@ do
       LABEL=$(echo $RES | cut -d, -f2)
       svg2png -w $SIZE -h $SIZE "$SVG" "$ICONSET_DIR"/icon_${LABEL}.png
    done
-
-   if [ ! -d Assets.xcassets/AppIcon.appiconset ]
-   then
-      mkdir -p Assets.xcassets/AppIcon.appiconset
-   fi
    
-   for LABEL in ${RESOLUTIONS_KEEP[@]}
-   do
-      cp "$ICONSET_DIR"/icon_${LABEL}.png  Assets.xcassets/AppIcon.appiconset/AppIcon${LABEL}.png
-   done
-
+   # macos
    iconutil -c icns "$ICONSET_DIR"
    rm -rf "$ICONSET_DIR"
 
+   # windows
    magick $SVG -define icon:auto-resize=256,64,48,32,16 $BASE.ico
    
 done
