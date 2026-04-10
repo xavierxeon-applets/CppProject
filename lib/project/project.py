@@ -74,12 +74,8 @@ class Project:
       os.chdir(self.projectPath)
 
       self.cmake_file.generate()
-
-      if self._features & Features.CreateMain:
-         self.cpp_files.generate()
-
-      if self._features & Features.CreateQmlType:
-         self.qml_files.generate()
+      self.cpp_files.generate()
+      self.qml_files.generate()
 
       shutil.copy(self._scriptDir + '/_clang-format', '_clang-format')
       self._doGitThings()

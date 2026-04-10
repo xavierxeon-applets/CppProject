@@ -46,7 +46,7 @@ class CMakeFile:
 
    def writeCppPart(self, line):
 
-      line('find_package(WaTools REQUIRED)')
+      line('find_package(XX REQUIRED)')
       line()
 
       line('# c++')
@@ -81,7 +81,7 @@ class CMakeFile:
       line('set(CMAKE_AUTOMOC ON)')
       line('set(CMAKE_AUTORCC ON)')
       line()
-      line('find_package(WaTools REQUIRED)')
+      line('find_package(XX REQUIRED)')
       line()
 
       line('# c++')

@@ -22,6 +22,9 @@ class CppFiles:
 
    def generate(self):
 
+      if not self.project._features & Features.CreateMain:
+         return
+
       if self.project._type == Type.Cpp:
          self.writeCppMain()
       elif self.project._type == Type.QML:
