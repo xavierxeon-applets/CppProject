@@ -38,11 +38,8 @@ class QmlFiles:
          line('import QtQuick')
          line('import QtQuick.Layouts')
          line('')
-         line('Window {')
+         line('Item {')
          line('   id: window')
-         line('')
-         line('   visible: true')
-         line(f'   title: "{self.project.name}"')
          line('}')
          line()
 

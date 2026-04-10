@@ -81,7 +81,7 @@ class CMakeFile:
       line('set(CMAKE_AUTOMOC ON)')
       line('set(CMAKE_AUTORCC ON)')
       line()
-      line('find_package(XX REQUIRED)')
+      line('find_package(XX REQUIRED COMPONENTS Quick)')
       line()
 
       line('# c++')
