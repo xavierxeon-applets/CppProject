@@ -33,7 +33,7 @@ class CMakeFile:
       line(f'project({self.project.name} LANGUAGES CXX)')
       line()
 
-      line('set(CMAKE_CXX_STANDARD 20)')
+      line('set(CMAKE_CXX_STANDARD 23)')
       line('set(CMAKE_CXX_STANDARD_REQUIRED ON)')
       line('set(CMAKE_CXX_EXTENSIONS ON)')
       line()
