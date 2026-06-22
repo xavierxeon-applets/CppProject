@@ -1,4 +1,7 @@
-#!/usr/bin/env -S uv run --script
+#!/usr/bin/env bash
+''':'
+exec uv run --project "$(dirname "${BASH_SOURCE[0]}")" python "$0" "$@"
+' '''
 
 import argparse
 

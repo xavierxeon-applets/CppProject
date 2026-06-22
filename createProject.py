@@ -1,4 +1,7 @@
-#!/usr/bin/env -S uv run --script
+#!/usr/bin/env bash
+''':'
+exec uv run --project "$(dirname "${BASH_SOURCE[0]}")" python "$0" "$@"
+' '''
 
 import signal
 import sys
@@ -7,6 +10,7 @@ from wapy.qt_tools import autoUIC
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer
+
 
 def signit_handler(*args):
 

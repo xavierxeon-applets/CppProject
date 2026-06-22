@@ -1,8 +1,12 @@
-#!/usr/bin/env -S uv run --script
+#!/usr/bin/env bash
+''':'
+exec uv run --project "$(dirname "${BASH_SOURCE[0]}")" python "$0" "$@"
+' '''
 
 import argparse
 
 from lib.qml import *
+
 
 def main():
 
@@ -14,7 +18,7 @@ def main():
    qmlNames = args.qmlnames
    for fileName in qmlNames:
       createQml(fileName)
-   
+
 
 if __name__ == '__main__':
    main()
