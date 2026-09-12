@@ -165,7 +165,7 @@ class Project(CursesApp):
 
          cmakefile.write('include_directories(${CMAKE_CURRENT_SOURCE_DIR})\n')
          cmakefile.write('\n')
-         cmakefile.write('file(GLOB SOURCE_FILES\n')
+         cmakefile.write('file(GLOB SOURCE_FILES CONFIGURE_DEPENDS\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.h\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp\n')
          cmakefile.write('   ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp\n')
